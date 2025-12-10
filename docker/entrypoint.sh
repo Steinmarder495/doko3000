@@ -7,9 +7,7 @@ if [ ! -z "${PYCHARM_HOSTED}" ];
     $@
   else
     # runs as unprivileged user
-    gunicorn --user doko3000 \
-             --group doko3000 \
-             --worker-class eventlet \
+    gunicorn --worker-class eventlet \
              --workers 1 \
              --log-level ERROR \
              --bind :5000 \

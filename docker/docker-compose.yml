@@ -6,7 +6,9 @@ volumes:
 
 services:
   doko3000:
-    image: henriwahl/doko3000
+    build:
+      context: ..
+      dockerfile: Dockerfile
     container_name: doko3000
     restart: always
     depends_on:
@@ -14,17 +16,21 @@ services:
     ports:
       - "80:5000"
     environment:
-      - HOST
-      - SECRET_KEY
-      - COUCHDB_USER
-      - COUCHDB_PASSWORD
+      - HOST=${HOST:-localhost}
+      - SECRET_KEY=${SECRET_KEY:-change_me}
+      - COUCHDB_URL=http://couchdb:5984
+      - COUCHDB_DATABASE=${COUCHDB_DATABASE:-doko3000}
+      - COUCHDB_USER=${COUCHDB_USER:-admin}
+      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-doko3000}
   couchdb:
-    image: couchdb
+    image: couchdb:3
     container_name: doko3000-couchdb
     restart: always
+    ports:
+      - "5984:5984"
     volumes:
       - doko3000-couchdb-data:/opt/couchdb/data
       - doko3000-couchdb-config:/opt/couchdb/etc/local.d
     environment:
-      - COUCHDB_USER
-      - COUCHDB_PASSWORD
+      - COUCHDB_USER=${COUCHDB_USER:-admin}
+      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-doko3000}
