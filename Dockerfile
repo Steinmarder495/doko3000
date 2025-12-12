@@ -1,5 +1,6 @@
-# Use a Python image with uv pre-installed
-FROM ghcr.io/astral-sh/uv:python3.14-alpine AS builder
+# Builder stage
+# Pin to Python 3.14.1 and install uv so the venv interpreter matches runtime.
+FROM python:3.14.1-alpine AS builder
 
 # Install build dependencies
 RUN apk update && apk add --no-cache \
@@ -7,6 +8,9 @@ RUN apk update && apk add --no-cache \
     g++ \
     git \
     libc-dev
+
+# Install uv (Python package manager)
+RUN python -m pip install --no-cache-dir uv
 
 # Set working directory
 WORKDIR /doko3000
@@ -31,7 +35,8 @@ RUN git log --max-count 1 --decorate=short | head -n 1 > git_info
 RUN rm -rf .git
 
 # Final stage
-FROM python:3.14-alpine
+# Pin to Python 3.14.1 so the runtime matches the builder's interpreter.
+FROM python:3.14.1-alpine
 
 LABEL maintainer=henri.wahl@mailbox.org
 
@@ -50,17 +55,17 @@ ENV PATH="/doko3000/.venv/bin:$PATH"
 # Copy application code
 COPY --from=builder /doko3000 /doko3000
 
-# Create user
+# Create unprivileged user for gunicorn to drop to
 RUN adduser -D doko3000
 
-# Change ownership of application and venv to doko3000 user
+# Ensure .venv/bin files are executable by all users
+RUN chmod -R +x /doko3000/.venv/bin || true
+
+# Change ownership of /doko3000 to doko3000 user for proper permissions
 RUN chown -R doko3000:doko3000 /doko3000
 
 # Setup entrypoint
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
-# Switch to user
-USER doko3000
 
 ENTRYPOINT ["/entrypoint.sh"]

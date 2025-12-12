@@ -6,8 +6,11 @@ if [ ! -z "${PYCHARM_HOSTED}" ];
     # when running from PyCharm just pass all arguments to enable debugger
     $@
   else
-    # runs as unprivileged user
-    gunicorn --worker-class eventlet \
+    # gunicorn drops privileges to doko3000 user
+    # Run via python -m to avoid issues with the gunicorn wrapper script/shebang.
+    /doko3000/.venv/bin/python -m gunicorn --user doko3000 \
+             --group doko3000 \
+             --worker-class eventlet \
              --workers 1 \
              --log-level ERROR \
              --bind :5000 \

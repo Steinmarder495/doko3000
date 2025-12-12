@@ -1,5 +1,3 @@
-version: '3.9'
-
 volumes:
   doko3000-couchdb-config:
   doko3000-couchdb-data:
