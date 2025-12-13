@@ -55,7 +55,7 @@ ENV PATH="/doko3000/.venv/bin:$PATH"
 # Copy application code
 COPY --from=builder /doko3000 /doko3000
 
-# Create unprivileged user for gunicorn to drop to
+# Create unprivileged runtime user
 RUN adduser -D doko3000
 
 # Ensure .venv/bin files are executable by all users
@@ -67,5 +67,8 @@ RUN chown -R doko3000:doko3000 /doko3000
 # Setup entrypoint
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+# Run as unprivileged user by default (least privilege)
+USER doko3000
 
 ENTRYPOINT ["/entrypoint.sh"]
