@@ -19,12 +19,14 @@ services:
     networks:
       - doko3000
     environment:
-      - HOST
-      - SECRET_KEY
-      - COUCHDB_USER
-      - COUCHDB_PASSWORD
+      - HOST=${HOST:-localhost}
+      - SECRET_KEY=${SECRET_KEY:-change_me}
+      - COUCHDB_URL=http://couchdb:5984
+      - COUCHDB_DATABASE=${COUCHDB_DATABASE:-doko3000}
+      - COUCHDB_USER=${COUCHDB_USER:-admin}
+      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-doko3000}
   couchdb:
-    image: couchdb
+    image: couchdb:3
     container_name: doko3000-couchdb
     restart: always
     volumes:
@@ -33,8 +35,8 @@ services:
     networks:
       - doko3000
     environment:
-      - COUCHDB_USER
-      - COUCHDB_PASSWORD
+      - COUCHDB_USER=${COUCHDB_USER:-admin}
+      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-doko3000}
   nginx:
     image: nginx:stable-alpine
     container_name: doko3000-nginx

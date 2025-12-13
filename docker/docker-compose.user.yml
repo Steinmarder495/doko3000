@@ -4,10 +4,8 @@ volumes:
 
 services:
   doko3000:
-    # Development compose: builds the image locally from the repo
-    build:
-      context: ..
-      dockerfile: Dockerfile
+    # User compose: runs the prebuilt image
+    image: henriwahl/doko3000
     container_name: doko3000
     restart: always
     depends_on:
@@ -31,3 +29,4 @@ services:
     environment:
       - COUCHDB_USER=${COUCHDB_USER:-admin}
       - COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-doko3000}
+
