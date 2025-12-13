@@ -22,10 +22,12 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
     environment:
-      - HOST
-      - SECRET_KEY
-      - COUCHDB_USER
-      - COUCHDB_PASSWORD
+      - HOST=${HOST:-localhost}
+      - SECRET_KEY=${SECRET_KEY:-change_me}
+      - COUCHDB_URL=http://couchdb:5984
+      - COUCHDB_DATABASE=${COUCHDB_DATABASE:-doko3000}
+      - COUCHDB_USER=${COUCHDB_USER:-admin}
+      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-doko3000}
     depends_on:
       - couchdb
       - nginx
@@ -49,7 +51,7 @@ services:
       - traefik.http.routers.doko3000.middlewares=doko3000-to-https
       - traefik.http.middlewares.doko3000-to-https.redirectscheme.scheme=https
   couchdb:
-    image: couchdb
+    image: couchdb:3
     container_name: doko3000-couchdb
     restart: always
     volumes:
@@ -57,8 +59,8 @@ services:
       - couchdb-config:/opt/couchdb/etc/local.d
       - /etc/localtime:/etc/localtime:ro
     environment:
-      - COUCHDB_USER
-      - COUCHDB_PASSWORD
+      - COUCHDB_USER=${COUCHDB_USER:-admin}
+      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-doko3000}
     networks:
       - doko3000
   nginx:

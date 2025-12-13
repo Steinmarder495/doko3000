@@ -1,6 +1,7 @@
+*.pyc
 *.db
 *.idea
 *.pem
 .env
-docker-compose.yml
 /git_info
+*.egg-info

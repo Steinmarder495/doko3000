@@ -116,9 +116,18 @@ directory you're in.
 
 As one can see there a **CouchDB server** is required.
 
-The simplest way is running it only accessible via HTTP on port 80:
+The simplest way is running it only accessible via HTTP on port 80.
+
+For most users, run the **prebuilt** image:
   
+    docker-compose -f docker/docker-compose.user.yml up -d
+
+For development, `docker/docker-compose.yml` builds the image **locally** (from `Dockerfile`):
+
     docker-compose -f docker/docker-compose.yml up -d
+
+Note: CouchDB is **not** exposed to the host in any of these examples. If you need to access it from your machine,
+explicitly add a `ports:` mapping to the `couchdb` service in your local setup.
   
 If you plan to use HTTPS better use the *docker-compose-https.yml* file. Copy the **certificate** and **key** files
 respectively as *cert.pem* and *key.pem* into [/docker](./docker) and run:
